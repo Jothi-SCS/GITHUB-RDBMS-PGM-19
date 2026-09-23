@@ -7,9 +7,11 @@ BEGIN
     DECLARE v_dept INT;
     DECLARE done INT DEFAULT FALSE;
 
+    -- Declare cursor for student records
     DECLARE student_cursor CURSOR FOR 
         SELECT StudentID, StudentName, DepartmentID FROM Student;
 
+    -- Declare continue handler
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN student_cursor;
@@ -25,4 +27,5 @@ BEGIN
     CLOSE student_cursor;
 END //
 
+DELIMITER ;
 DELIMITER ;
