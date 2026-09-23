@@ -22,32 +22,8 @@ jobs:
 
       - name: Set up Database Schema and Test Data
         run: |
-          mysql -h 127.0.0.1 -u root -proot testdb < .github/tests/schema.sql
-
-      - name: Run Student Solution
-        run: |
-          mysql -h 127.0.0.1 -u root -proot testdb < solution.sql
-
-      - name: Test Procedure Output
-        run: |
-          # Execute the procedure and format output
-          mysql -h 127.0.0.1 -u root -proot testdb -e "CALL FetchStudentRecords();" > actual_output.txt
-
-          # Check if expected records are returned in output
-          grep -q "101" actual_output.txt && \
-          grep -q "Abirami" actual_output.txt && \
-          grep -q "Karthik" actual_output.txt
-
-      - name: Validate Cursor Usage
-        run: |
-          # Verify student actually declared and used a cursor
-          grep -i -q "DECLARE.*CURSOR FOR" solution.sql && \
-          grep -i -q "OPEN" solution.sql && \
-          grep -i -q "FETCH" solution.sql && \
-          grep -i -q "CLOSE" solution.sql
-          - name: Set up Database Schema and Test Data
-        run: |
           mysql -h 127.0.0.1 -u root -proot testdb -e "
+          DROP TABLE IF EXISTS Student;
           CREATE TABLE Student (
               StudentID INT PRIMARY KEY,
               StudentName VARCHAR(100),
@@ -59,3 +35,25 @@ jobs:
           (103, 'Suresh', 1),
           (104, 'Anitha', 3);
           "
+
+      - name: Run Student Solution
+        run: |
+          mysql -h 127.0.0.1 -u root -proot testdb < solution.sql
+
+      - name: Test Procedure Output
+        run: |
+          # Execute procedure and verify student output
+          mysql -h 127.0.0.1 -u root -proot testdb -e "CALL FetchStudentRecords();" > actual_output.txt
+          
+          # Check if expected records are printed
+          grep -q "101" actual_output.txt && \
+          grep -q "Abirami" actual_output.txt && \
+          grep -q "Karthik" actual_output.txt
+
+      - name: Validate Cursor Usage
+        run: |
+          # Verify student solution contains key cursor keywords
+          grep -i -q "DECLARE.*CURSOR FOR" solution.sql && \
+          grep -i -q "OPEN" solution.sql && \
+          grep -i -q "FETCH" solution.sql && \
+          grep -i -q "CLOSE" solution.sql
