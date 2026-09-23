@@ -45,3 +45,17 @@ jobs:
           grep -i -q "OPEN" solution.sql && \
           grep -i -q "FETCH" solution.sql && \
           grep -i -q "CLOSE" solution.sql
+          - name: Set up Database Schema and Test Data
+        run: |
+          mysql -h 127.0.0.1 -u root -proot testdb -e "
+          CREATE TABLE Student (
+              StudentID INT PRIMARY KEY,
+              StudentName VARCHAR(100),
+              DepartmentID INT
+          );
+          INSERT INTO Student (StudentID, StudentName, DepartmentID) VALUES
+          (101, 'Abirami', 1),
+          (102, 'Karthik', 2),
+          (103, 'Suresh', 1),
+          (104, 'Anitha', 3);
+          "
